@@ -61,17 +61,17 @@ public class UserServieImpl implements UserService{
     public User updateUser(User user, Long userId) throws Exception {
         User user1 = findUserById(userId);
 
-        if (user.getFirstName() != null && user.getFirstName().equals(user1.getFirstName())) {
-            user1.setFirstName(user1.getFirstName());
+        if (user.getFirstName() != null && !user.getFirstName().equals(user1.getFirstName())) {
+            user1.setFirstName(user.getFirstName());
         }
-        if (user.getLastName() != null && user.getLastName().equals(user1.getLastName())) {
-            user1.setLastName(user1.getLastName());
+        if (user.getLastName() != null && !user.getLastName().equals(user1.getLastName())) {
+            user1.setLastName(user.getLastName());
         }
-        if (user.getEmail() != null && user.getEmail().equals(user1.getEmail())) {
-            user1.setEmail(user1.getEmail());
+        if (user.getEmail() != null && !user.getEmail().equals(user1.getEmail())) {
+            user1.setEmail(user.getEmail());
         }
-        if (user.getGender() != null && user.getGender().equals(user1.getGender())) {
-            user1.setGender(user1.getGender());
+        if (user.getGender() != null && !user.getGender().equals(user1.getGender())) {
+            user1.setGender(user.getGender());
         }
 
         return userRepository.save(user1);
