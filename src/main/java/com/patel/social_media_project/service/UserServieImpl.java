@@ -3,6 +3,7 @@ package com.patel.social_media_project.service;
 import com.patel.social_media_project.model.User;
 import com.patel.social_media_project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,18 +13,6 @@ import java.util.Optional;
 public class UserServieImpl implements UserService{
     @Autowired
     private UserRepository userRepository;
-
-    @Override
-    public User registerUser(User user) {
-        User newUser = new User();
-        newUser.setFirstName(user.getFirstName());
-        newUser.setLastName(user.getLastName());
-        newUser.setEmail(user.getEmail());
-        newUser.setPassword(user.getPassword());
-        newUser.setGender(user.getGender());
-
-        return userRepository.save(newUser);
-    }
 
     @Override
     public User findUserById(Long userId) throws Exception {
@@ -36,13 +25,13 @@ public class UserServieImpl implements UserService{
     }
 
     @Override
-    public User findUserByEmail(String email) throws Exception {
-        Optional<User> userOptional = userRepository.findByEmail(email);
+    public User findUserByEmail(String email) throws UsernameNotFoundException {
+        User user = userRepository.findByEmail(email);
 
-        if (userOptional.isEmpty()) {
-            throw new Exception("User not found with email: " + email);
+        if (user == null) {
+            throw new UsernameNotFoundException("User not found with email: " + email);
         }
-        return userOptional.get();
+        return user;
     }
 
     @Override
