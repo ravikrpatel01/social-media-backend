@@ -73,22 +73,24 @@ public class PostController {
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
 
-    @PutMapping("/{postId}/user/{userId}")
+    @PutMapping("/save/{postId}")
     public ResponseEntity<Post> savedPost(
             @PathVariable Long postId,
-            @PathVariable Long userId
+            @RequestHeader("Authorization") String jwt
     ) throws Exception {
-        Post post = postService.savedPost(postId, userId);
+        User reqUser = userService.findUserFromJwtToken(jwt);
+        Post post = postService.savedPost(postId, reqUser.getId());
 
         return new ResponseEntity<>(post, HttpStatus.OK);
     }
 
-    @PutMapping("/like/{postId}/user/{userId}")
+    @PutMapping("/like/{postId}")
     public ResponseEntity<Post> likedPost(
             @PathVariable Long postId,
-            @PathVariable Long userId
+            @RequestHeader("Authorization") String jwt
     ) throws Exception {
-        Post post = postService.likedPost(postId, userId);
+        User reqUser = userService.findUserFromJwtToken(jwt);
+        Post post = postService.likedPost(postId, reqUser.getId());
 
         return new ResponseEntity<>(post, HttpStatus.OK);
     }

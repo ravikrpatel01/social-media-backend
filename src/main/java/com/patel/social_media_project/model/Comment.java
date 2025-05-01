@@ -8,27 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "posts")
 @Data
-public class Post {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String caption;
-
-    private String image;
-
-    private String video;
+    private String content;
 
     @ManyToOne
     private User user;
 
-    @OneToMany
+    @ManyToMany
     private List<User> liked = new ArrayList<>();
-
-    @OneToMany
-    private List<Comment> comments = new ArrayList<>();
 
     private LocalDateTime createdAt;
 }

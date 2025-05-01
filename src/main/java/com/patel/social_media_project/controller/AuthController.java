@@ -58,7 +58,6 @@ public class AuthController {
         String token = JwtProvider.generateToken(authentication);
 
         AuthResponse response = new AuthResponse();
-
         response.setToken(token);
         response.setMessage("User registered successfully!");
 
@@ -72,9 +71,6 @@ public class AuthController {
         String token = JwtProvider.generateToken(authentication);
 
         AuthResponse response = new AuthResponse();
-
-        User user = userRepository.findByEmail(request.getEmail());
-
         response.setToken(token);
         response.setMessage("User logged-in successfully!");
 
