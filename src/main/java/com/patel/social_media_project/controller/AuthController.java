@@ -59,9 +59,6 @@ public class AuthController {
 
         AuthResponse response = new AuthResponse();
 
-        response.setFirstName(createdUser.getFirstName());
-        response.setLastName(createdUser.getLastName());
-        response.setEmail(createdUser.getEmail());
         response.setToken(token);
         response.setMessage("User registered successfully!");
 
@@ -78,9 +75,6 @@ public class AuthController {
 
         User user = userRepository.findByEmail(request.getEmail());
 
-        response.setFirstName(user.getFirstName());
-        response.setLastName(user.getLastName());
-        response.setEmail(user.getEmail());
         response.setToken(token);
         response.setMessage("User logged-in successfully!");
 

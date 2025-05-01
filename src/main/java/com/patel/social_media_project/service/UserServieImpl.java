@@ -1,9 +1,11 @@
 package com.patel.social_media_project.service;
 
+import com.patel.social_media_project.config.JwtProvider;
 import com.patel.social_media_project.model.User;
 import com.patel.social_media_project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +15,9 @@ import java.util.Optional;
 public class UserServieImpl implements UserService{
     @Autowired
     private UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User findUserById(Long userId) throws Exception {
@@ -35,15 +40,21 @@ public class UserServieImpl implements UserService{
     }
 
     @Override
-    public User followUser(Long userId1, Long userId2) throws Exception {
-        User user1 = findUserById(userId1);
+    public User followUser(Long reqUserId, Long userId2) throws Exception {
+        User reqUser = findUserById(reqUserId);
         User user2 = findUserById(userId2);
 
-        user2.getFollowers().add(user1.getId());
-        user1.getFollowings().add(user2.getId());
+        user2.getFollowers().add(reqUser.getId());
+        reqUser.getFollowings().add(user2.getId());
 
         userRepository.save(user2);
-        return userRepository.save(user1);
+        return userRepository.save(reqUser);
+    }
+
+    @Override
+    public String deleteUser(Long userId) throws Exception {
+        userRepository.deleteById(userId);
+        return "User deleted successfully!";
     }
 
     @Override
@@ -68,7 +79,7 @@ public class UserServieImpl implements UserService{
 
     @Override
     public User updatePassword(User user, String password) {
-        user.setPassword(password);
+        user.setPassword(passwordEncoder.encode(password));
         return userRepository.save(user);
     }
 
@@ -80,5 +91,12 @@ public class UserServieImpl implements UserService{
     @Override
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    @Override
+    public User findUserFromJwtToken(String jwt) {
+        String email = JwtProvider.getEmailFromJwtToken(jwt);
+
+        return findUserByEmail(email);
     }
 }
