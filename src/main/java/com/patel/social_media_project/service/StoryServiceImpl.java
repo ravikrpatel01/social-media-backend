@@ -31,6 +31,6 @@ public class StoryServiceImpl implements StoryService {
     @Override
     public List<Story> findStoryByUserId(Long userId) throws Exception {
         User user = userService.findUserById(userId);
-        return storyRepository.findByUserId(userId);
+        return storyRepository.findByUserId(user.getId());
     }
 }
