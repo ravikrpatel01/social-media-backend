@@ -1,5 +1,6 @@
 package com.patel.social_media_project.controller;
 
+import com.patel.social_media_project.exceptions.UserNotFoundException;
 import com.patel.social_media_project.model.Story;
 import com.patel.social_media_project.model.User;
 import com.patel.social_media_project.service.StoryService;
@@ -24,7 +25,7 @@ public class StoryController {
     public ResponseEntity<Story> createStory(
             @RequestBody Story story,
             @RequestHeader("Authorization") String jwt
-    ) {
+    ) throws UserNotFoundException {
         User user = userService.findUserFromJwtToken(jwt);
         Story createdStory = storyService.createStory(story, user);
 
@@ -34,7 +35,7 @@ public class StoryController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Story>> findStoryByUserId(
             @PathVariable Long userId
-    ) throws Exception {
+    ) throws UserNotFoundException {
         List<Story> stories = storyService.findStoryByUserId(userId);
 
         return new ResponseEntity<>(stories, HttpStatus.OK);

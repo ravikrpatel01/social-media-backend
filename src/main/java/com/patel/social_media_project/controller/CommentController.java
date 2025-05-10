@@ -1,5 +1,8 @@
 package com.patel.social_media_project.controller;
 
+import com.patel.social_media_project.exceptions.CommentNotFoundException;
+import com.patel.social_media_project.exceptions.PostNotFoundException;
+import com.patel.social_media_project.exceptions.UserNotFoundException;
 import com.patel.social_media_project.model.Comment;
 import com.patel.social_media_project.model.User;
 import com.patel.social_media_project.service.CommentService;
@@ -23,7 +26,7 @@ public class CommentController {
            @RequestBody Comment comment,
            @PathVariable Long postId,
            @RequestHeader("Authorization") String jwt
-    ) throws Exception {
+    ) throws UserNotFoundException, PostNotFoundException {
         User reqUser = userService.findUserFromJwtToken(jwt);
         Comment addedComment = commentService.addComment(comment, postId, reqUser.getId());
 
@@ -43,7 +46,7 @@ public class CommentController {
     public ResponseEntity<Comment> likeComment(
             @PathVariable Long commentId,
             @RequestHeader("Authorization") String jwt
-    ) throws Exception {
+    ) throws UserNotFoundException, CommentNotFoundException {
         User reqUser = userService.findUserFromJwtToken(jwt);
 
         Comment likedComment = commentService.likeComment(commentId, reqUser.getId());

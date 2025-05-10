@@ -1,5 +1,7 @@
 package com.patel.social_media_project.service;
 
+import com.patel.social_media_project.exceptions.ChatNotFoundException;
+import com.patel.social_media_project.exceptions.UserNotFoundException;
 import com.patel.social_media_project.model.Chat;
 import com.patel.social_media_project.model.Message;
 import com.patel.social_media_project.model.User;
@@ -23,7 +25,7 @@ public class MessageServiceImpl implements MessageService{
     private ChatService chatService;
 
     @Override
-    public Message createMessage(User user, Long chatId, Message req) throws Exception {
+    public Message createMessage(User user, Long chatId, Message req) throws UserNotFoundException, ChatNotFoundException {
         Message message = new Message();
 
         Chat chat = chatService.findChatById(chatId);
@@ -43,7 +45,8 @@ public class MessageServiceImpl implements MessageService{
     }
 
     @Override
-    public List<Message> findChatMessages(Long chatId) {
+    public List<Message> findChatMessages(Long chatId) throws ChatNotFoundException {
+        Chat chat = chatService.findChatById(chatId);
         return messageRepository.findByChatId(chatId);
     }
 }

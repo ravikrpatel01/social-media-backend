@@ -1,5 +1,6 @@
 package com.patel.social_media_project.controller;
 
+import com.patel.social_media_project.exceptions.UserNotFoundException;
 import com.patel.social_media_project.model.User;
 import com.patel.social_media_project.repository.UserRepository;
 import com.patel.social_media_project.request.UpdatePasswordRequest;
@@ -8,6 +9,7 @@ import com.patel.social_media_project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,14 +29,18 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<User> findUserById(@PathVariable Long id) throws Exception {
+    public ResponseEntity<User> findUserById(
+            @PathVariable Long id
+    ) throws UserNotFoundException {
         User user = userService.findUserById(id);
 
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @DeleteMapping("/delete/{userId}")
-    public ResponseEntity<ResponseMessage> deleteUser(@PathVariable Long userId) throws Exception {
+    public ResponseEntity<ResponseMessage> deleteUser(
+            @PathVariable Long userId
+    ) throws UserNotFoundException {
         String response = userService.deleteUser(userId);
         ResponseMessage responseMessage = new ResponseMessage();
         responseMessage.setMessage(response);
@@ -46,7 +52,8 @@ public class UserController {
     @PutMapping("/update")
     public ResponseEntity<User> updateUser(
             @RequestBody User user,
-            @RequestHeader("Authorization") String jwt) throws Exception {
+            @RequestHeader("Authorization") String jwt
+    ) throws UserNotFoundException {
         User reqUser = userService.findUserFromJwtToken(jwt);
 
         User updatedUser = userService.updateUser(user, reqUser.getId());
@@ -58,7 +65,7 @@ public class UserController {
     public ResponseEntity<User> updatePassword(
             @RequestHeader("Authorization") String jwt,
             @RequestBody UpdatePasswordRequest req
-            ) throws Exception {
+    ) throws UserNotFoundException {
         User reqUser = userService.findUserFromJwtToken(jwt);
 
         String password = req.getPassword();
@@ -71,7 +78,7 @@ public class UserController {
     public ResponseEntity<User> followUserHandler(
             @RequestHeader("Authorization") String jwt,
             @PathVariable Long userId2
-    ) throws Exception {
+    ) throws UserNotFoundException {
         User reqUser = userService.findUserFromJwtToken(jwt);
         User user = userService.followUser(reqUser.getId(), userId2);
 
@@ -79,12 +86,16 @@ public class UserController {
     }
 
     @GetMapping("/search")
-    public ResponseEntity<List<User>> searchUser(@RequestParam String query) {
+    public ResponseEntity<List<User>> searchUser(
+            @RequestParam String query
+    ) {
         return new ResponseEntity<>(userService.searchUser(query), HttpStatus.OK);
     }
 
     @GetMapping("/profile")
-    public ResponseEntity<User> getUserFromToken(@RequestHeader("Authorization") String jwt) throws Exception {
+    public ResponseEntity<User> getUserFromToken(
+            @RequestHeader("Authorization") String jwt
+    ) throws UserNotFoundException {
         User user = userService.findUserFromJwtToken(jwt);
         user.setPassword(null);
         return new ResponseEntity<>(user, HttpStatus.OK);

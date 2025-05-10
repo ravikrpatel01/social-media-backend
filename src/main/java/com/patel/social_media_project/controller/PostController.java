@@ -1,5 +1,7 @@
 package com.patel.social_media_project.controller;
 
+import com.patel.social_media_project.exceptions.PostNotFoundException;
+import com.patel.social_media_project.exceptions.UserNotFoundException;
 import com.patel.social_media_project.model.Post;
 import com.patel.social_media_project.model.User;
 import com.patel.social_media_project.response.ResponseMessage;
@@ -77,7 +79,7 @@ public class PostController {
     public ResponseEntity<Post> savedPost(
             @PathVariable Long postId,
             @RequestHeader("Authorization") String jwt
-    ) throws Exception {
+    ) throws UserNotFoundException, PostNotFoundException {
         User reqUser = userService.findUserFromJwtToken(jwt);
         Post post = postService.savedPost(postId, reqUser.getId());
 

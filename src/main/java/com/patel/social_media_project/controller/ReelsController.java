@@ -1,5 +1,6 @@
 package com.patel.social_media_project.controller;
 
+import com.patel.social_media_project.exceptions.UserNotFoundException;
 import com.patel.social_media_project.model.Reels;
 import com.patel.social_media_project.model.User;
 import com.patel.social_media_project.service.ReelsService;
@@ -24,7 +25,7 @@ public class ReelsController {
     public ResponseEntity<Reels> createReels(
             @RequestBody Reels reels,
             @RequestHeader("Authorization") String jwt
-    ) throws Exception {
+    ) throws UserNotFoundException {
         User user = userService.findUserFromJwtToken(jwt);
         Reels createdReel = reelsService.createReels(reels, user);
 
@@ -41,7 +42,7 @@ public class ReelsController {
     @GetMapping("/user/{userId}")
     public ResponseEntity<List<Reels>> findUserReels(
             @PathVariable Long userId
-    ) throws Exception {
+    ) throws UserNotFoundException {
         List<Reels> reels = reelsService.findUsersReel(userId);
 
         return new ResponseEntity<>(reels, HttpStatus.OK);

@@ -1,5 +1,7 @@
 package com.patel.social_media_project.controller;
 
+import com.patel.social_media_project.exceptions.ChatNotFoundException;
+import com.patel.social_media_project.exceptions.UserNotFoundException;
 import com.patel.social_media_project.model.Chat;
 import com.patel.social_media_project.model.Message;
 import com.patel.social_media_project.model.User;
@@ -30,7 +32,7 @@ public class MessageController {
             @RequestHeader("Authorization") String jwt,
             @RequestBody Message req,
             @PathVariable Long chatId
-    ) throws Exception {
+    ) throws UserNotFoundException, ChatNotFoundException {
         User user = userService.findUserFromJwtToken(jwt);
         Message message = messageService.createMessage(user, chatId, req);
 
@@ -40,7 +42,7 @@ public class MessageController {
     @GetMapping("/chat/{chatId}")
     public ResponseEntity<List<Message>> findChatMessages(
          @PathVariable Long chatId
-    ) throws Exception {
+    ) throws ChatNotFoundException {
         Chat chat = chatService.findChatById(chatId);
         List<Message> messages = messageService.findChatMessages(chat.getId());
 

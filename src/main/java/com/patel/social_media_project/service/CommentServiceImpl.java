@@ -1,5 +1,8 @@
 package com.patel.social_media_project.service;
 
+import com.patel.social_media_project.exceptions.CommentNotFoundException;
+import com.patel.social_media_project.exceptions.PostNotFoundException;
+import com.patel.social_media_project.exceptions.UserNotFoundException;
 import com.patel.social_media_project.model.Comment;
 import com.patel.social_media_project.model.Post;
 import com.patel.social_media_project.model.User;
@@ -26,7 +29,7 @@ public class CommentServiceImpl implements CommentService{
     private PostRepository postRepository;
 
     @Override
-    public Comment addComment(Comment comment, Long postId, Long userId) throws Exception {
+    public Comment addComment(Comment comment, Long postId, Long userId) throws UserNotFoundException, PostNotFoundException {
         User user = userService.findUserById(userId);
         Post post = postService.findPostById(postId);
 
@@ -42,17 +45,17 @@ public class CommentServiceImpl implements CommentService{
     }
 
     @Override
-    public Comment findCommentById(Long commentId) throws Exception {
+    public Comment findCommentById(Long commentId) throws CommentNotFoundException {
         Optional<Comment> commentOptional = commentRepository.findById(commentId);
 
         if (commentOptional.isEmpty()) {
-            throw new Exception("Comment not found with id: " + commentId);
+            throw new CommentNotFoundException("Comment not found with id: " + commentId);
         }
         return commentOptional.get();
     }
 
     @Override
-    public Comment likeComment(Long commentId, Long userId) throws Exception {
+    public Comment likeComment(Long commentId, Long userId) throws UserNotFoundException, CommentNotFoundException {
         Comment comment = findCommentById(commentId);
         User user = userService.findUserById(userId);
 

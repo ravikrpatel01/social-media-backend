@@ -1,5 +1,6 @@
 package com.patel.social_media_project.service;
 
+import com.patel.social_media_project.exceptions.UserNotFoundException;
 import com.patel.social_media_project.model.Reels;
 import com.patel.social_media_project.model.User;
 import com.patel.social_media_project.repository.ReelsRepository;
@@ -17,7 +18,7 @@ public class ReelsServiceImpl implements ReelsService{
     private UserService userService;
 
     @Override
-    public Reels createReels(Reels reels, User user) throws Exception {
+    public Reels createReels(Reels reels, User user) throws UserNotFoundException {
         Reels newReels = new Reels();
         newReels.setTitle(reels.getTitle());
         newReels.setVideo(reels.getVideo());
@@ -32,7 +33,7 @@ public class ReelsServiceImpl implements ReelsService{
     }
 
     @Override
-    public List<Reels> findUsersReel(Long userId) throws Exception {
+    public List<Reels> findUsersReel(Long userId) throws UserNotFoundException {
         User user = userService.findUserById(userId);
 
         return reelsRepository.findByUserId(user.getId());

@@ -1,10 +1,10 @@
 package com.patel.social_media_project.service;
 
 import com.patel.social_media_project.config.JwtProvider;
+import com.patel.social_media_project.exceptions.UserNotFoundException;
 import com.patel.social_media_project.model.User;
 import com.patel.social_media_project.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -20,27 +20,27 @@ public class UserServieImpl implements UserService{
     private PasswordEncoder passwordEncoder;
 
     @Override
-    public User findUserById(Long userId) throws Exception {
+    public User findUserById(Long userId) throws UserNotFoundException {
         Optional<User> userOptional = userRepository.findById(userId);
 
         if (userOptional.isEmpty()) {
-            throw new Exception("User not found with ID: " + userId);
+            throw new UserNotFoundException("User not found with ID: " + userId);
         }
         return userOptional.get();
     }
 
     @Override
-    public User findUserByEmail(String email) throws UsernameNotFoundException {
+    public User findUserByEmail(String email) throws UserNotFoundException {
         User user = userRepository.findByEmail(email);
 
         if (user == null) {
-            throw new UsernameNotFoundException("User not found with email: " + email);
+            throw new UserNotFoundException("User not found with email: " + email);
         }
         return user;
     }
 
     @Override
-    public User followUser(Long reqUserId, Long userId2) throws Exception {
+    public User followUser(Long reqUserId, Long userId2) throws UserNotFoundException {
         User reqUser = findUserById(reqUserId);
         User user2 = findUserById(userId2);
 
@@ -52,14 +52,14 @@ public class UserServieImpl implements UserService{
     }
 
     @Override
-    public String deleteUser(Long userId) throws Exception {
+    public String deleteUser(Long userId) throws UserNotFoundException {
         User user = findUserById(userId);
         userRepository.deleteById(user.getId());
         return "User deleted successfully!";
     }
 
     @Override
-    public User updateUser(User user, Long userId) throws Exception {
+    public User updateUser(User user, Long userId) throws UserNotFoundException {
         User user1 = findUserById(userId);
 
         if (user.getFirstName() != null && !user.getFirstName().equals(user1.getFirstName())) {
@@ -95,7 +95,7 @@ public class UserServieImpl implements UserService{
     }
 
     @Override
-    public User findUserFromJwtToken(String jwt) {
+    public User findUserFromJwtToken(String jwt) throws UserNotFoundException {
         String email = JwtProvider.getEmailFromJwtToken(jwt);
 
         return findUserByEmail(email);

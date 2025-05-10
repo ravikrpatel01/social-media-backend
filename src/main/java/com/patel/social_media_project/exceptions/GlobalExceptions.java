@@ -14,14 +14,14 @@ public class GlobalExceptions {
 
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorDetails> handleAllExceptions(
-        Exception e, WebRequest request
+            Exception e, WebRequest request
     ) {
         ErrorDetails error = new ErrorDetails(
-                e.getMessage(),
+                LocalDateTime.now(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 "Internal Server Error",
-                request.getDescription(false).replace("uri=", ""),
-                LocalDateTime.now()
+                e.getMessage(),
+                request.getDescription(false).replace("uri=", "")
         );
 
         return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -32,13 +32,118 @@ public class GlobalExceptions {
             BadCredentialsException e, WebRequest request
     ) {
         ErrorDetails error = new ErrorDetails(
-                e.getMessage(),
+                LocalDateTime.now(),
                 HttpStatus.UNAUTHORIZED.value(),
                 "Unauthorized",
-                request.getDescription(false).replace("uri=", ""),
-                LocalDateTime.now()
+                e.getMessage(),
+                request.getDescription(false).replace("uri=", "")
         );
 
         return new ResponseEntity<>(error, HttpStatus.UNAUTHORIZED);
+    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleUserNotFound(
+            UserNotFoundException e,
+            WebRequest request
+    ) {
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                e.getMessage(),
+                request.getDescription(false).replace("uri=", "")
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(PostNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handlePostNotFound(
+            PostNotFoundException e,
+            WebRequest request
+    ) {
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                e.getMessage(),
+                request.getDescription(false).replace("uri=", "")
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ChatNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleChatNotFound(
+            ChatNotFoundException e,
+            WebRequest request
+    ) {
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                e.getMessage(),
+                request.getDescription(false).replace("uri=", "")
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(CommentNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleCommentNotFound(
+            CommentNotFoundException e,
+            WebRequest request
+    ) {
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                e.getMessage(),
+                request.getDescription(false).replace("uri=", "")
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(MessageNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleMessageNotFound(
+            MessageNotFoundException e,
+            WebRequest request
+    ) {
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                e.getMessage(),
+                request.getDescription(false).replace("uri=", "")
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(ReelsNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleReelsNotFound(
+            ReelsNotFoundException e,
+            WebRequest request
+    ) {
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                e.getMessage(),
+                request.getDescription(false).replace("uri=", "")
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(StoryNotFoundException.class)
+    public ResponseEntity<ErrorDetails> handleStoryNotFound(
+            StoryNotFoundException e,
+            WebRequest request
+    ) {
+        ErrorDetails error = new ErrorDetails(
+                LocalDateTime.now(),
+                HttpStatus.NOT_FOUND.value(),
+                "Not Found",
+                e.getMessage(),
+                request.getDescription(false).replace("uri=", "")
+        );
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 }

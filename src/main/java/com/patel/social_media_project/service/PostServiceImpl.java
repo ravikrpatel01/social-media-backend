@@ -1,5 +1,7 @@
 package com.patel.social_media_project.service;
 
+import com.patel.social_media_project.exceptions.PostNotFoundException;
+import com.patel.social_media_project.exceptions.UserNotFoundException;
 import com.patel.social_media_project.model.Post;
 import com.patel.social_media_project.model.User;
 import com.patel.social_media_project.repository.PostRepository;
@@ -57,11 +59,11 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public Post findPostById(Long postId) throws Exception {
+    public Post findPostById(Long postId) throws PostNotFoundException {
         Optional<Post> postOptional = postRepository.findById(postId);
 
         if (postOptional.isEmpty()) {
-            throw new Exception("Post not found with id: " + postId);
+            throw new PostNotFoundException("Post not found with id: " + postId);
         }
 
         return postOptional.get();
@@ -73,7 +75,7 @@ public class PostServiceImpl implements PostService{
     }
 
     @Override
-    public Post savedPost(Long postId, Long userId) throws Exception {
+    public Post savedPost(Long postId, Long userId) throws UserNotFoundException, PostNotFoundException {
         Post post = findPostById(postId);
         User user = userService.findUserById(userId);
 

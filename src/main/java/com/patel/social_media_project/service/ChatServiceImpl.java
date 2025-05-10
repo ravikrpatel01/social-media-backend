@@ -1,5 +1,6 @@
 package com.patel.social_media_project.service;
 
+import com.patel.social_media_project.exceptions.ChatNotFoundException;
 import com.patel.social_media_project.model.Chat;
 import com.patel.social_media_project.model.User;
 import com.patel.social_media_project.repository.ChatRepository;
@@ -31,11 +32,11 @@ public class ChatServiceImpl implements ChatService{
     }
 
     @Override
-    public Chat findChatById(Long chatId) throws Exception {
+    public Chat findChatById(Long chatId) throws ChatNotFoundException {
         Optional<Chat> chatOptional = chatRepository.findById(chatId);
 
         if (chatOptional.isEmpty()) {
-            throw new Exception("Chat not found with ID: " + chatId);
+            throw new ChatNotFoundException("Chat not found with ID: " + chatId);
         }
         return chatOptional.get();
     }
