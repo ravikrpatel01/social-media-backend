@@ -24,7 +24,7 @@ public class UserServieImpl implements UserService{
         Optional<User> userOptional = userRepository.findById(userId);
 
         if (userOptional.isEmpty()) {
-            throw new Exception("User not found with id: " + userId);
+            throw new Exception("User not found with ID: " + userId);
         }
         return userOptional.get();
     }
@@ -53,7 +53,8 @@ public class UserServieImpl implements UserService{
 
     @Override
     public String deleteUser(Long userId) throws Exception {
-        userRepository.deleteById(userId);
+        User user = findUserById(userId);
+        userRepository.deleteById(user.getId());
         return "User deleted successfully!";
     }
 

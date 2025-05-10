@@ -10,7 +10,6 @@ import com.patel.social_media_project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -65,7 +64,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) {
+    public ResponseEntity<AuthResponse> login(@RequestBody LoginRequest request) throws Exception {
         Authentication authentication = authenticate(request.getEmail(), request.getPassword());
 
         String token = JwtProvider.generateToken(authentication);
@@ -77,11 +76,11 @@ public class AuthController {
         return new ResponseEntity<>(response, HttpStatus.ACCEPTED);
     }
 
-    private Authentication authenticate(String email, String password) {
+    private Authentication authenticate(String email, String password) throws Exception {
         UserDetails userDetails = customUserDetailsService.loadUserByUsername(email);
 
         if (userDetails == null || !passwordEncoder.matches(password, userDetails.getPassword())) {
-            throw new BadCredentialsException("Invalid username or password!");
+            throw new Exception("Invalid username or password!");
         }
 
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

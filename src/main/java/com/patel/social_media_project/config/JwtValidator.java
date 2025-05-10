@@ -4,7 +4,6 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class JwtValidator extends OncePerRequestFilter {
+
     @Override
     protected void doFilterInternal(
             HttpServletRequest request,
@@ -23,16 +23,28 @@ public class JwtValidator extends OncePerRequestFilter {
             FilterChain filterChain
     ) throws ServletException, IOException {
         String jwt = request.getHeader(JwtConstant.JWT_HEADER);
-        if (jwt != null) {
+
+        if (jwt != null && jwt.startsWith("Bearer ")) {
             try {
+                jwt = jwt.substring(7);
                 String email = JwtProvider.getEmailFromJwtToken(jwt);
+
                 List<GrantedAuthority> authorities = new ArrayList<>();
-                Authentication authentication = new UsernamePasswordAuthenticationToken(email, null, authorities);
+
+                Authentication authentication = new UsernamePasswordAuthenticationToken(
+                        email,
+                        null,
+                        authorities
+                );
+
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception e) {
-                throw new BadCredentialsException("Invalid username or password!");
+                SecurityContextHolder.clearContext();
+                response.sendError(HttpServletResponse.SC_UNAUTHORIZED, "Invalid JWT token");
+                return;
             }
         }
+
         filterChain.doFilter(request, response);
     }
 }

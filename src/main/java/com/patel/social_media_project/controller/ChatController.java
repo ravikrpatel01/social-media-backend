@@ -1,8 +1,10 @@
 package com.patel.social_media_project.controller;
 
 import com.patel.social_media_project.model.Chat;
+import com.patel.social_media_project.model.User;
 import com.patel.social_media_project.request.CreateChatRequest;
 import com.patel.social_media_project.service.ChatService;
+import com.patel.social_media_project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,11 +18,17 @@ public class ChatController {
     @Autowired
     private ChatService chatService;
 
+    @Autowired
+    private UserService userService;
+
     @PostMapping
     public ResponseEntity<Chat> createChat(
+            @RequestHeader("Authorization") String jwt,
             @RequestBody CreateChatRequest request
-            ) {
-        Chat createdChat = chatService.createChat(request.getReqUser(), request.getUser2());
+            ) throws Exception {
+        User reqUser = userService.findUserFromJwtToken(jwt);
+        User user2 = userService.findUserById(request.getUserId());
+        Chat createdChat = chatService.createChat(reqUser, user2);
         return new ResponseEntity<>(createdChat, HttpStatus.CREATED);
     }
 
@@ -32,11 +40,12 @@ public class ChatController {
         return new ResponseEntity<>(chat, HttpStatus.OK);
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping
     public ResponseEntity<List<Chat>> findUsersChat(
-            @PathVariable Long userId
+            @RequestHeader("Authorization") String jwt
     ) {
-        List<Chat> chats = chatService.findUsersChat(userId);
+        User user = userService.findUserFromJwtToken(jwt);
+        List<Chat> chats = chatService.findUsersChat(user.getId());
         return new ResponseEntity<>(chats, HttpStatus.OK);
     }
 }
